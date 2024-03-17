@@ -1,10 +1,11 @@
 "use client";
 
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useOrganization, useUser } from "@clerk/nextjs";
 import { useMutation, useQuery } from "convex/react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useOrganization, useUser } from "@clerk/nextjs";
 
 import { api } from "@/convex/_generated/api";
 
@@ -19,7 +20,6 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -27,6 +27,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
+import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
   title: z.string().min(1).max(200),
@@ -36,8 +38,10 @@ const formSchema = z.object({
 });
 
 export default function Home() {
-  const organization = useOrganization();
+  const { toast } = useToast();
   const user = useUser();
+  const organization = useOrganization();
+  const generateUploadUrl = useMutation(api.files.generateUploadUrl);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -49,14 +53,52 @@ export default function Home() {
 
   const fileRef = form.register("file");
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
+    if (!orgId) {
+      return;
+    }
+
+    const postUrl = await generateUploadUrl();
+    const result = await fetch(postUrl, {
+      method: "POST",
+      headers: { "Content-Type": values.file[0].type },
+      body: values.file[0],
+    });
+
+    const { storageId } = await result.json();
+
+    try {
+      await createFile({
+        name: values.title,
+        fileId: storageId,
+        orgId,
+      });
+
+      form.reset();
+
+      setIsFileDialogOpen(false);
+
+      toast({
+        variant: "success",
+        title: "File uploaded",
+        description: "Your file has been uploaded successfully.",
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Something went wrong!",
+        description: "Your file could not be uploaded. Please try again later.",
+      });
+    }
   }
 
   let orgId: string | undefined = undefined;
   if (organization.isLoaded && user.isLoaded) {
     orgId = organization.organization?.id ?? user.user?.id;
   }
+
+  const [isFileDialogOpen, setIsFileDialogOpen] = useState(false);
 
   const files = useQuery(api.files.getFiles, orgId ? { orgId } : "skip");
   const createFile = useMutation(api.files.createFile);
@@ -67,11 +109,11 @@ export default function Home() {
         <h1 className="text-3xl font-bold">Your files</h1>
 
         <Dialog
-        // open={isFileDialogOpen}
-        // onOpenChange={(isOpen) => {
-        //   setIsFileDialogOpen(isOpen);
-        //   form.reset();
-        // }}
+          open={isFileDialogOpen}
+          onOpenChange={(isOpen) => {
+            setIsFileDialogOpen(isOpen);
+            form.reset();
+          }}
         >
           <DialogTrigger asChild>
             <Button onClick={() => {}}>Upload File</Button>
@@ -122,6 +164,9 @@ export default function Home() {
                     disabled={form.formState.isSubmitting}
                     className="flex gap-1"
                   >
+                    {form.formState.isSubmitting && (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    )}
                     Submit
                   </Button>
                 </form>
