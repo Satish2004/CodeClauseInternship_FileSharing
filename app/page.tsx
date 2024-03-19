@@ -6,6 +6,7 @@ import { useOrganization, useUser } from "@clerk/nextjs";
 import { api } from "@/convex/_generated/api";
 
 import UploadButton from "./_components/upload-button";
+import { FileCard } from "./_components/file-card";
 
 export default function Home() {
   const user = useUser();
@@ -20,14 +21,16 @@ export default function Home() {
 
   return (
     <main className="container mx-auto pt-10">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Your files</h1>
         <UploadButton />
       </div>
 
-      {files?.map((file) => {
-        return <div key={file._id}>{file.name}</div>;
-      })}
+      <div className="grid grid-cols-4 gap-4">
+        {files?.map((file) => {
+          return <FileCard key={file._id} file={file} />;
+        })}
+      </div>
     </main>
   );
 }
