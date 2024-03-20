@@ -55,7 +55,14 @@ export function FileCard({ file }: FileCardProps) {
       </CardHeader>
       <CardContent className="h-[200px] flex justify-center items-center">
         {file.type === "image" && (
-          <Image alt={file.name} width={"100"} height={"100"} src={imageSrc} />
+          <Image
+            alt={file.name}
+            width={"100"}
+            height={"100"}
+            src={imageSrc}
+            priority
+            style={{ width: "auto", height: "auto" }}
+          />
         )}
 
         {file.type === "csv" && <GanttChartIcon className="w-20 h-20" />}

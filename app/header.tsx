@@ -19,6 +19,8 @@ const Header = () => {
             alt="FileBox Logo"
             width={65}
             height={65}
+            priority
+            style={{ width: "auto", height: "auto" }}
           />
         </Link>
         <div className="flex gap-x-4 items-center justify-center">
