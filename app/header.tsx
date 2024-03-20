@@ -17,8 +17,8 @@ const Header = () => {
           <Image
             src={"/assets/file-box-logo.png"}
             alt="FileBox Logo"
-            width={65}
-            height={65}
+            width={60}
+            height={60}
             priority
             style={{ width: "auto", height: "auto" }}
           />
