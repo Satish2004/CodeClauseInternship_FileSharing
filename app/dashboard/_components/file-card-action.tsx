@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useMutation } from "convex/react";
-import { MoreVertical, Trash2 } from "lucide-react";
+import { MoreVertical, Star, Trash2 } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -31,6 +31,8 @@ interface FileCardActionProps {
 
 export function FileCardAction({ file }: FileCardActionProps) {
   const deleteFile = useMutation(api.files.deleteFile);
+  const toggleFavorite = useMutation(api.files.toggleFavorite);
+
   const { toast } = useToast();
 
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -71,11 +73,20 @@ export function FileCardAction({ file }: FileCardActionProps) {
 
       <DropdownMenu>
         <DropdownMenuTrigger>
-          <MoreVertical />
+          <MoreVertical className="w-6 h-6" />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
+          <DropdownMenuItem
+            onClick={() => {
+              toggleFavorite({ fileId: file._id });
+            }}
+            className="gap-2 flex justify-between items-center cursor-pointer"
+          >
+            Favorite
+            <Star className="w-4 h-4" />
+          </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => setIsConfirmOpen(true)}
             className="gap-2 flex justify-between items-center cursor-pointer"

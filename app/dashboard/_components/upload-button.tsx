@@ -28,7 +28,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { Loader } from "lucide-react";
+import { Loader, Plus } from "lucide-react";
 import { Doc } from "@/convex/_generated/dataModel";
 
 const formSchema = z.object({
@@ -124,7 +124,13 @@ export default function UploadButton() {
       }}
     >
       <DialogTrigger asChild>
-        <Button onClick={() => {}}>Upload File</Button>
+        <Button
+          className="gap-4 border border-gray-400 rounded-xl shadow-xl py-6 px-5"
+          variant={"outline"}
+        >
+          <Plus />
+          New
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -165,6 +171,7 @@ export default function UploadButton() {
                 )}
               />
               <Button
+                size={"sm"}
                 type="submit"
                 disabled={form.formState.isSubmitting}
                 className="flex gap-1"

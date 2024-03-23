@@ -28,9 +28,9 @@ interface FileCardProps {
 
 export function FileCard({ file }: FileCardProps) {
   const typeIcons = {
-    image: <ImageIcon />,
-    pdf: <FileTextIcon />,
-    csv: <GanttChartIcon />,
+    image: <ImageIcon className="w-6 h-6" />,
+    pdf: <FileTextIcon className="w-6 h-6" />,
+    csv: <GanttChartIcon className="w-6 h-6" />,
   } as Record<Doc<"files">["type"], ReactNode>;
 
   const imageSrc = useQuery(api.files.getStorageInfo, {
@@ -38,27 +38,31 @@ export function FileCard({ file }: FileCardProps) {
   });
 
   if (!imageSrc) {
-    return <LoaderIcon className="w-4 h-4 animate-spin" />;
+    return (
+      <div className="h-[150px] flex justify-center items-center">
+        <LoaderIcon className="w-4 h-4 animate-spin text-gray-600" />
+      </div>
+    );
   }
 
   return (
-    <Card>
-      <CardHeader className="relative">
-        <CardTitle className="flex gap-2">
+    <Card className=" bg-gray-100 hover:bg-gray-200">
+      <CardHeader className="relative p-4">
+        <CardTitle className="flex gap-x-2 items-center">
           <div className="flex justify-center">{typeIcons[file.type]}</div>
-          {file.name}
+          <div className="text-base font-normal">{file.name}</div>
         </CardTitle>
-        <div className="absolute top-2 right-2">
+        <div className="absolute top-3 right-2">
           <FileCardAction file={file} />
         </div>
         {/* <CardDescription>Card Description</CardDescription> */}
       </CardHeader>
-      <CardContent className="h-[200px] flex justify-center items-center">
+      <CardContent className="h-[125px] flex justify-center items-center bg-white mx-2 rounded-lg p-1">
         {file.type === "image" && (
           <Image
             alt={file.name}
-            width={"100"}
-            height={"100"}
+            width={"60"}
+            height={"60"}
             src={imageSrc}
             priority
             style={{ width: "auto", height: "auto" }}
@@ -68,8 +72,9 @@ export function FileCard({ file }: FileCardProps) {
         {file.type === "csv" && <GanttChartIcon className="w-20 h-20" />}
         {file.type === "pdf" && <FileTextIcon className="w-20 h-20" />}
       </CardContent>
-      <CardFooter className="flex justify-center">
+      <CardFooter className="flex justify-center p-4">
         <Button
+          size={"sm"}
           onClick={() => {
             window.open(imageSrc, "_blank");
           }}
