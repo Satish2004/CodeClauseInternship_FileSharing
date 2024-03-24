@@ -8,7 +8,7 @@ import {
   LoaderIcon,
 } from "lucide-react";
 
-import { Doc } from "@/convex/_generated/dataModel";
+import { Doc, Id } from "@/convex/_generated/dataModel";
 import { api } from "@/convex/_generated/api";
 
 import {
@@ -24,9 +24,10 @@ import { FileCardAction } from "./file-card-action";
 
 interface FileCardProps {
   file: Doc<"files">;
+  favorites: Doc<"favorites">[];
 }
 
-export function FileCard({ file }: FileCardProps) {
+export function FileCard({ file, favorites }: FileCardProps) {
   const typeIcons = {
     image: <ImageIcon className="w-6 h-6" />,
     pdf: <FileTextIcon className="w-6 h-6" />,
@@ -45,6 +46,10 @@ export function FileCard({ file }: FileCardProps) {
     );
   }
 
+  const isFavorite = favorites.some(
+    (favorites) => favorites.fileId === file._id
+  );
+
   return (
     <Card className=" bg-gray-100 hover:bg-gray-200">
       <CardHeader className="relative p-4">
@@ -53,7 +58,7 @@ export function FileCard({ file }: FileCardProps) {
           <div className="text-base font-normal">{file.name}</div>
         </CardTitle>
         <div className="absolute top-3 right-2">
-          <FileCardAction file={file} />
+          <FileCardAction file={file} isFavorite={isFavorite} />
         </div>
         {/* <CardDescription>Card Description</CardDescription> */}
       </CardHeader>

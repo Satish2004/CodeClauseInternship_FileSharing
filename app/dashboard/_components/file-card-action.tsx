@@ -27,9 +27,10 @@ import { useToast } from "@/components/ui/use-toast";
 
 interface FileCardActionProps {
   file: Doc<"files">;
+  isFavorite?: boolean;
 }
 
-export function FileCardAction({ file }: FileCardActionProps) {
+export function FileCardAction({ file, isFavorite }: FileCardActionProps) {
   const deleteFile = useMutation(api.files.deleteFile);
   const toggleFavorite = useMutation(api.files.toggleFavorite);
 
@@ -84,8 +85,17 @@ export function FileCardAction({ file }: FileCardActionProps) {
             }}
             className="gap-2 flex justify-between items-center cursor-pointer"
           >
-            Favorite
-            <Star className="w-4 h-4" />
+            {isFavorite ? (
+              <>
+                Unfavorite
+                <Star className="w-4 h-4 text-yellow-500" />
+              </>
+            ) : (
+              <>
+                Favorite
+                <Star className="w-4 h-4" />
+              </>
+            )}
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => setIsConfirmOpen(true)}
