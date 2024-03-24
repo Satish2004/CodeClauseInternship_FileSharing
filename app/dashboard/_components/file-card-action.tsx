@@ -2,6 +2,9 @@ import { useState } from "react";
 import { useMutation } from "convex/react";
 import { MoreVertical, Star, Trash2 } from "lucide-react";
 
+import { api } from "@/convex/_generated/api";
+import { Doc } from "@/convex/_generated/dataModel";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,9 +24,6 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/components/ui/use-toast";
-
-import { api } from "@/convex/_generated/api";
-import { Doc } from "@/convex/_generated/dataModel";
 
 interface FileCardActionProps {
   file: Doc<"files">;

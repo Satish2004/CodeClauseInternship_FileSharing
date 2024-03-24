@@ -3,14 +3,14 @@
 import Image from "next/image";
 import { useState } from "react";
 import { useQuery } from "convex/react";
-import { Loader, LoaderIcon } from "lucide-react";
+import { Loader } from "lucide-react";
 import { useOrganization, useUser } from "@clerk/nextjs";
 
 import { api } from "@/convex/_generated/api";
 
-import UploadButton from "@/app/dashboard/_components/upload-button";
-import { SearchBar } from "@/app/dashboard/_components/search-bar";
 import { FileCard } from "@/app/dashboard/_components/file-card";
+import { SearchBar } from "@/app/dashboard/_components/search-bar";
+import UploadButton from "@/app/dashboard/_components/upload-button";
 
 interface FileBrowserProps {
   title: string;

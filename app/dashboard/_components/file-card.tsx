@@ -1,11 +1,15 @@
 import Image from "next/image";
 import { ReactNode } from "react";
+import { useQuery } from "convex/react";
 import {
   FileTextIcon,
   GanttChartIcon,
   ImageIcon,
   LoaderIcon,
 } from "lucide-react";
+
+import { Doc } from "@/convex/_generated/dataModel";
+import { api } from "@/convex/_generated/api";
 
 import {
   Card,
@@ -16,11 +20,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
-import { Doc, Id } from "@/convex/_generated/dataModel";
-
 import { FileCardAction } from "./file-card-action";
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
 
 interface FileCardProps {
   file: Doc<"files">;
