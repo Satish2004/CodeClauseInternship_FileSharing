@@ -11,14 +11,20 @@ export const roles = v.union(v.literal("admin"), v.literal("member"));
 
 export default defineSchema({
   files: defineTable({
-    name: v.string(),
     type: fileTypes,
-    fileId: v.id("_storage"),
+    name: v.string(),
     orgId: v.string(),
-  }).index("by_orgId", ["orgId"]),
+    fileId: v.id("_storage"),
+    userId: v.id("users"),
+    isMarkedForDeletion: v.optional(v.boolean()),
+  })
+    .index("by_orgId", ["orgId"])
+    .index("by_markedDelete", ["isMarkedForDeletion"]),
 
   users: defineTable({
     tokenIdentifier: v.string(),
+    name: v.optional(v.string()),
+    image: v.optional(v.string()),
     orgIds: v.array(
       v.object({
         orgId: v.string(),
