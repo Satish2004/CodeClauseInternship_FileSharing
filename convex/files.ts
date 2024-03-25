@@ -1,6 +1,5 @@
 import { ConvexError, v } from "convex/values";
 import { MutationCtx, QueryCtx, mutation, query } from "./_generated/server";
-import { getUser } from "./users";
 import { fileTypes } from "./schema";
 import { Id } from "./_generated/dataModel";
 
@@ -33,7 +32,8 @@ async function hasAccessToOrg(ctx: QueryCtx | MutationCtx, orgId: string) {
   }
 
   const hasAccess =
-    user.orgIds.includes(orgId) || user.tokenIdentifier.includes(orgId);
+    user.orgIds.some((item) => item.orgId === orgId) ||
+    user.tokenIdentifier.includes(orgId);
 
   if (!hasAccess) {
     return null;
@@ -58,8 +58,8 @@ export const createFile = mutation({
 
     await ctx.db.insert("files", {
       name: args.name,
-      fileId: args.fileId,
       orgId: args.orgId,
+      fileId: args.fileId,
       type: args.type,
     });
   },
@@ -119,6 +119,16 @@ export const deleteFile = mutation({
       throw new ConvexError("You do not have access to this file.");
     }
 
+    const isAdmin =
+      access.user.orgIds.find((org) => org.orgId === access.file.orgId)
+        ?.role === "admin";
+
+    if (!isAdmin) {
+      throw new ConvexError(
+        "You do not have admin access to delete this file."
+      );
+    }
+
     await ctx.db.delete(args.fileId);
   },
 });
@@ -147,8 +157,8 @@ export const toggleFavorite = mutation({
     if (!favorite) {
       await ctx.db.insert("favorites", {
         fileId: access.file._id,
-        orgId: access.file.orgId,
         userId: access.user._id,
+        orgId: access.file.orgId,
       });
     } else {
       await ctx.db.delete(favorite._id);

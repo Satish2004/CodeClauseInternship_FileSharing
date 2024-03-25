@@ -26,7 +26,7 @@ function EmptyFiles() {
         height={250}
         width={250}
         priority
-        style={{ width: "250", height: "250" }}
+        style={{ width: "250px", height: "250px" }}
       />
       <div className="flex text-xl items-center justify-center">
         You have no files yet, upload one now!

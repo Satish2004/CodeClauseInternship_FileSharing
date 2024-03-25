@@ -24,6 +24,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/components/ui/use-toast";
+import { Protect } from "@clerk/nextjs";
 
 interface FileCardActionProps {
   file: Doc<"files">;
@@ -77,7 +78,7 @@ export function FileCardAction({ file, isFavorite }: FileCardActionProps) {
           <MoreVertical className="w-6 h-6" />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuLabel className="text-center">Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={() => {
@@ -97,13 +98,22 @@ export function FileCardAction({ file, isFavorite }: FileCardActionProps) {
               </>
             )}
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => setIsConfirmOpen(true)}
-            className="gap-2 flex justify-between items-center cursor-pointer"
+          <Protect
+            role="org:admin"
+            fallback={
+              <p className="text-xs px-2 py-1.5">
+                You do not have the permission delete this file.
+              </p>
+            }
           >
-            Delete
-            <Trash2 className="w-4 h-4 text-red-600" />
-          </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => setIsConfirmOpen(true)}
+              className="gap-2 flex justify-between items-center cursor-pointer"
+            >
+              Delete
+              <Trash2 className="w-4 h-4 text-red-600" />
+            </DropdownMenuItem>
+          </Protect>
         </DropdownMenuContent>
       </DropdownMenu>
     </>
