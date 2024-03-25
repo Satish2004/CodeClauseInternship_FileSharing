@@ -1,6 +1,13 @@
 import { useState } from "react";
-import { useMutation } from "convex/react";
-import { MoreVertical, Star, Trash2 } from "lucide-react";
+import { useMutation, useQuery } from "convex/react";
+import {
+  Download,
+  LoaderIcon,
+  MoreVertical,
+  Star,
+  Trash2,
+  Undo,
+} from "lucide-react";
 
 import { api } from "@/convex/_generated/api";
 import { Doc } from "@/convex/_generated/dataModel";
@@ -33,19 +40,31 @@ interface FileCardActionProps {
 
 export function FileCardAction({ file, isFavorite }: FileCardActionProps) {
   const deleteFile = useMutation(api.files.deleteFile);
+  const restoreFile = useMutation(api.files.restoreFile);
   const toggleFavorite = useMutation(api.files.toggleFavorite);
+  const imageSrc = useQuery(api.files.getStorageInfo, {
+    storageId: file.fileId,
+  });
 
   const { toast } = useToast();
 
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+
+  if (!imageSrc) {
+    return (
+      <div className="h-[150px] flex justify-center items-center">
+        <LoaderIcon className="w-4 h-4 animate-spin text-gray-600" />
+      </div>
+    );
+  }
 
   const handleDeleteFile = async () => {
     await deleteFile({ fileId: file._id });
 
     toast({
       variant: "default",
-      title: "File deleted",
-      description: "Your file has been deleted successfully.",
+      title: "File moved to trash!",
+      description: "You can restore it later if you want.",
       duration: 3000,
     });
   };
@@ -57,8 +76,8 @@ export function FileCardAction({ file, isFavorite }: FileCardActionProps) {
           <AlertDialogHeader>
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete your
-              file.
+              This action will mark the file for deletion and move it to the
+              trash.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -80,6 +99,17 @@ export function FileCardAction({ file, isFavorite }: FileCardActionProps) {
         <DropdownMenuContent>
           <DropdownMenuLabel className="text-center">Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
+
+          <DropdownMenuItem
+            onClick={() => {
+              window.open(imageSrc, "_blank");
+            }}
+            className="gap-2 flex justify-between items-center cursor-pointer"
+          >
+            Download
+            <Download className="w-4 h-4 " />
+          </DropdownMenuItem>
+
           <DropdownMenuItem
             onClick={() => {
               toggleFavorite({ fileId: file._id });
@@ -98,6 +128,7 @@ export function FileCardAction({ file, isFavorite }: FileCardActionProps) {
               </>
             )}
           </DropdownMenuItem>
+
           <Protect
             role="org:admin"
             fallback={
@@ -107,11 +138,26 @@ export function FileCardAction({ file, isFavorite }: FileCardActionProps) {
             }
           >
             <DropdownMenuItem
-              onClick={() => setIsConfirmOpen(true)}
+              onClick={() => {
+                if (file.isMarkedForDeletion) {
+                  restoreFile({ fileId: file._id });
+                } else {
+                  setIsConfirmOpen(true);
+                }
+              }}
               className="gap-2 flex justify-between items-center cursor-pointer"
             >
-              Delete
-              <Trash2 className="w-4 h-4 text-red-600" />
+              {file.isMarkedForDeletion ? (
+                <>
+                  Restore
+                  <Undo className="w-4 h-4 text-green-600" />
+                </>
+              ) : (
+                <>
+                  Trash
+                  <Trash2 className="w-4 h-4 text-red-600" />
+                </>
+              )}
             </DropdownMenuItem>
           </Protect>
         </DropdownMenuContent>

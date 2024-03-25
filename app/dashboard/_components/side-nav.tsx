@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useQuery } from "convex/react";
-import { FileIcon, Star } from "lucide-react";
+import { FileIcon, Star, Trash2 } from "lucide-react";
 import { useOrganization, useUser } from "@clerk/nextjs";
 
 import { api } from "@/convex/_generated/api";
@@ -51,6 +51,7 @@ export function SideNav() {
                 All files
               </Button>
             </Link>
+
             <Link
               href="/dashboard/favorites"
               className={cn(
@@ -65,6 +66,22 @@ export function SideNav() {
               <Button variant={"link"} className="gap-4">
                 <Star />
                 Favorites
+              </Button>
+            </Link>
+
+            <Link
+              href="/dashboard/trash"
+              className={cn(
+                "hover:bg-gray-100  border border-white rounded-lg",
+                {
+                  "bg-gray-100 border-gray-300":
+                    pathname.includes("/dashboard/trash"),
+                }
+              )}
+            >
+              <Button variant={"link"} className="gap-4">
+                <Trash2 />
+                Trash
               </Button>
             </Link>
           </div>

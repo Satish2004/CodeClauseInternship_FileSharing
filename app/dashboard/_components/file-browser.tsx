@@ -15,6 +15,7 @@ import UploadButton from "@/app/dashboard/_components/upload-button";
 interface FileBrowserProps {
   title: string;
   favoritesOnly?: boolean;
+  deletedOnly?: boolean;
 }
 
 function EmptyFiles() {
@@ -36,7 +37,11 @@ function EmptyFiles() {
   );
 }
 
-export function FileBrowser({ title, favoritesOnly }: FileBrowserProps) {
+export function FileBrowser({
+  title,
+  favoritesOnly,
+  deletedOnly,
+}: FileBrowserProps) {
   const user = useUser();
   const organization = useOrganization();
   const [query, setQuery] = useState("");
@@ -48,7 +53,7 @@ export function FileBrowser({ title, favoritesOnly }: FileBrowserProps) {
 
   const files = useQuery(
     api.files.getFiles,
-    orgId ? { orgId, query, favorites: favoritesOnly } : "skip"
+    orgId ? { orgId, query, favorites: favoritesOnly, deletedOnly } : "skip"
   );
 
   const favoritesFiles = useQuery(
