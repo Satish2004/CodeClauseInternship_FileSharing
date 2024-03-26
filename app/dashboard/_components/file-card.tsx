@@ -7,7 +7,7 @@ import {
   ImageIcon,
   LoaderIcon,
 } from "lucide-react";
-import { format, formatDistance, formatRelative, subDays } from "date-fns";
+import { formatRelative } from "date-fns";
 
 import { Doc, Id } from "@/convex/_generated/dataModel";
 import { api } from "@/convex/_generated/api";
@@ -22,14 +22,12 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { FileCardAction } from "./file-card-action";
-import { formatRevalidate } from "next/dist/server/lib/revalidate";
 
 interface FileCardProps {
-  file: Doc<"files">;
-  favorites: Doc<"favorites">[];
+  file: Doc<"files"> & { isFavorite: boolean };
 }
 
-export function FileCard({ file, favorites }: FileCardProps) {
+export function FileCard({ file }: FileCardProps) {
   const typeIcons = {
     image: <ImageIcon className="w-6 h-6" />,
     pdf: <FileTextIcon className="w-6 h-6" />,
@@ -47,14 +45,10 @@ export function FileCard({ file, favorites }: FileCardProps) {
   if (!imageSrc) {
     return (
       <div className="h-[150px] flex justify-center items-center">
-        <LoaderIcon className="w-4 h-4 animate-spin text-gray-600" />
+        <LoaderIcon className="w-5 h-5 animate-spin text-gray-800" />
       </div>
     );
   }
-
-  const isFavorite = favorites.some(
-    (favorites) => favorites.fileId === file._id
-  );
 
   return (
     <Card className=" bg-gray-100 hover:bg-gray-200">
@@ -64,7 +58,7 @@ export function FileCard({ file, favorites }: FileCardProps) {
           <div>{file.name}</div>
         </CardTitle>
         <div className="absolute top-3 right-2">
-          <FileCardAction file={file} isFavorite={isFavorite} />
+          <FileCardAction file={file} isFavorite={file.isFavorite} />
         </div>
         {/* <CardDescription>Card Description</CardDescription> */}
       </CardHeader>

@@ -3,7 +3,7 @@ import UploadButton from "./upload-button";
 
 export function EmptyFiles() {
   return (
-    <div className="flex flex-col gap-8 w-full items-center mt-12">
+    <div className="flex flex-col gap-8 w-full items-center">
       <Image
         src={"/assets/empty-box.svg"}
         alt="Empty box"
@@ -22,7 +22,7 @@ export function EmptyFiles() {
 
 export function EmptyFavorite() {
   return (
-    <div className="flex flex-col gap-8 w-full items-center mt-12">
+    <div className="flex flex-col gap-8 w-full items-center">
       <Image
         src={"/assets/empty-favorite.svg"}
         alt="Empty box"
@@ -40,7 +40,7 @@ export function EmptyFavorite() {
 
 export function EmptyTrash() {
   return (
-    <div className="flex flex-col gap-8 w-full items-center mt-12">
+    <div className="flex flex-col gap-8 w-full items-center">
       <Image
         src={"/assets/empty-trash.svg"}
         alt="Empty box"

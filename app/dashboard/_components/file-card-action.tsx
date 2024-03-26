@@ -53,7 +53,7 @@ export function FileCardAction({ file, isFavorite }: FileCardActionProps) {
   if (!imageSrc) {
     return (
       <div className="h-[150px] flex justify-center items-center">
-        <LoaderIcon className="w-4 h-4 animate-spin text-gray-600" />
+        <LoaderIcon className="w-5 h-5 animate-spin text-gray-800" />
       </div>
     );
   }
