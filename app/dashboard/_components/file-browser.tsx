@@ -10,31 +10,15 @@ import { api } from "@/convex/_generated/api";
 
 import { FileCard } from "@/app/dashboard/_components/file-card";
 import { SearchBar } from "@/app/dashboard/_components/search-bar";
-import UploadButton from "@/app/dashboard/_components/upload-button";
+
+import { EmptyFiles } from "./empty-cards";
+import { EmptyFavorite } from "./empty-cards";
+import { EmptyTrash } from "./empty-cards";
 
 interface FileBrowserProps {
   title: string;
   favoritesOnly?: boolean;
   deletedOnly?: boolean;
-}
-
-function EmptyFiles() {
-  return (
-    <div className="flex flex-col gap-8 w-full items-center mt-12">
-      <Image
-        src={"/assets/empty-box.svg"}
-        alt="Empty box"
-        height={250}
-        width={250}
-        priority
-        style={{ width: "250px", height: "250px" }}
-      />
-      <div className="flex text-xl items-center justify-center">
-        You have no files yet, upload one now!
-      </div>
-      <UploadButton />
-    </div>
-  );
 }
 
 export function FileBrowser({
@@ -82,7 +66,14 @@ export function FileBrowser({
               </div>
             </div>
 
-            {files.length === 0 && <EmptyFiles />}
+            {files.length === 0 &&
+              (favoritesOnly ? (
+                <EmptyFavorite />
+              ) : deletedOnly ? (
+                <EmptyTrash />
+              ) : (
+                <EmptyFiles />
+              ))}
 
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {files?.map((file) => {
