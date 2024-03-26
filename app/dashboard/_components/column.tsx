@@ -60,7 +60,7 @@ export const columns: ColumnDef<Doc<"files"> & { isFavorite: boolean }>[] = [
     header: "Actions",
     cell: ({ row }) => {
       return (
-        <div className="flex items-center justify-start">
+        <div className="flex items-center justify-start ml-4">
           <FileCardAction
             file={row.original}
             isFavorite={row.original.isFavorite}

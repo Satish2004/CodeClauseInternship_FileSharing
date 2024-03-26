@@ -7,6 +7,13 @@ import { useOrganization, useUser } from "@clerk/nextjs";
 
 import { api } from "@/convex/_generated/api";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 import { FileCard } from "@/app/dashboard/_components/file-card";
 import { SearchBar } from "@/app/dashboard/_components/search-bar";
@@ -69,17 +76,33 @@ export function FileBrowser({
         </div>
 
         <Tabs defaultValue="grid">
-          <TabsList className="mb-2">
-            <TabsTrigger value="grid" className="flex items-center gap-2">
-              <Grid2X2Icon /> Grid
-            </TabsTrigger>
-            <TabsTrigger value="table" className="flex items-center gap-2">
-              <Rows3Icon /> Table
-            </TabsTrigger>
-          </TabsList>
+          <div className="flex justify-between items-center">
+            <TabsList className="mb-4 bg-gray-100 border-gray-300 border ">
+              <TabsTrigger value="grid" className="flex items-center gap-2 ">
+                <Grid2X2Icon /> Grid
+              </TabsTrigger>
+              <TabsTrigger value="table" className="flex items-center gap-2 ">
+                <Rows3Icon /> Table
+              </TabsTrigger>
+            </TabsList>
+
+            <div>
+              <Select>
+                <SelectTrigger className="w-[180px]" defaultValue={"all"}>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All</SelectItem>
+                  <SelectItem value="image">Image</SelectItem>
+                  <SelectItem value="csv">CSV</SelectItem>
+                  <SelectItem value="pdf">PDF</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
 
           {isLoading && (
-            <div className="flex flex-col w-full h-full items-center justify-center mt-[8%]">
+            <div className="flex flex-col w-full h-full items-center justify-center mt-[10%]">
               <Loader className="h-8 w-8 animate-spin text-gray-600" />
               <div className="text-gray-600 mt-4">Loading.</div>
             </div>
