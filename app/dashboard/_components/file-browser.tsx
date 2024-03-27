@@ -23,6 +23,8 @@ import { EmptyFavorite } from "./empty-cards";
 import { EmptyTrash } from "./empty-cards";
 import { DataTable } from "./file-table";
 import { columns } from "./column";
+import { Doc } from "@/convex/_generated/dataModel";
+import { Label } from "@/components/ui/label";
 
 interface FileBrowserProps {
   title: string;
@@ -38,6 +40,7 @@ export function FileBrowser({
   const user = useUser();
   const organization = useOrganization();
   const [query, setQuery] = useState("");
+  const [type, setType] = useState<Doc<"files">["type"] | "all">("all");
 
   let orgId: string | undefined = undefined;
   if (organization.isLoaded && user.isLoaded) {
@@ -46,7 +49,15 @@ export function FileBrowser({
 
   const files = useQuery(
     api.files.getFiles,
-    orgId ? { orgId, query, favorites: favoritesOnly, deletedOnly } : "skip"
+    orgId
+      ? {
+          orgId,
+          type: type === "all" ? undefined : type,
+          query,
+          favorites: favoritesOnly,
+          deletedOnly,
+        }
+      : "skip"
   );
 
   const favoritesFiles = useQuery(
@@ -76,7 +87,7 @@ export function FileBrowser({
         </div>
 
         <Tabs defaultValue="grid">
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between">
             <TabsList className="mb-4 bg-gray-100 border-gray-300 border ">
               <TabsTrigger value="grid" className="flex items-center gap-2 ">
                 <Grid2X2Icon /> Grid
@@ -86,9 +97,20 @@ export function FileBrowser({
               </TabsTrigger>
             </TabsList>
 
-            <div>
-              <Select>
-                <SelectTrigger className="w-[180px]" defaultValue={"all"}>
+            <div className="flex gap-2">
+              <Label className="mt-3" htmlFor="type-select">
+                Type Filter
+              </Label>
+              <Select
+                value={type}
+                onValueChange={(newType) => {
+                  setType(newType as any);
+                }}
+              >
+                <SelectTrigger
+                  id="type-select"
+                  className="w-[150px] border border-gray-300"
+                >
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
