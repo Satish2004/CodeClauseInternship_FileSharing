@@ -98,7 +98,10 @@ export function FileBrowser({
             </TabsList>
 
             <div className="flex gap-2">
-              <Label className="mt-3" htmlFor="type-select">
+              <Label
+                className="mt-3 text-[#71748b] hidden lg:block md:block"
+                htmlFor="type-select"
+              >
                 Type Filter
               </Label>
               <Select
@@ -109,7 +112,7 @@ export function FileBrowser({
               >
                 <SelectTrigger
                   id="type-select"
-                  className="w-[150px] border border-gray-300"
+                  className="w-[80px] border border-gray-300 lg:w-[150px] md:w-[150px]"
                 >
                   <SelectValue />
                 </SelectTrigger>
@@ -126,7 +129,7 @@ export function FileBrowser({
           {isLoading && (
             <div className="flex flex-col w-full h-full items-center justify-center mt-[10%]">
               <Loader className="h-8 w-8 animate-spin text-gray-600" />
-              <div className="text-gray-600 mt-4">Loading.</div>
+              <div className="text-gray-600 mt-4">Loading</div>
             </div>
           )}
 

@@ -34,6 +34,11 @@ export function FileCard({ file }: FileCardProps) {
     csv: <GanttChartIcon className="w-6 h-6" />,
   } as Record<Doc<"files">["type"], ReactNode>;
 
+  const formattedDate = formatRelative(
+    new Date(file._creationTime),
+    new Date()
+  );
+
   const userProfile = useQuery(api.users.getUserProfile, {
     userId: file.userId,
   });
@@ -86,7 +91,7 @@ export function FileCard({ file }: FileCardProps) {
           <div>{userProfile?.name?.split(" ")[0] ?? ""}</div>
         </div>
         <div className=" text-[9px] text-gray-700">
-          Uploaded on {formatRelative(new Date(file._creationTime), new Date())}
+          {formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1)}
         </div>
       </CardFooter>
     </Card>

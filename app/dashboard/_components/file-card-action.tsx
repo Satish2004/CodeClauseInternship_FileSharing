@@ -42,9 +42,12 @@ export function FileCardAction({ file, isFavorite }: FileCardActionProps) {
   const deleteFile = useMutation(api.files.deleteFile);
   const restoreFile = useMutation(api.files.restoreFile);
   const toggleFavorite = useMutation(api.files.toggleFavorite);
+
   const imageSrc = useQuery(api.files.getStorageInfo, {
     storageId: file.fileId,
   });
+
+  const me = useQuery(api.users.getMe);
 
   const { toast } = useToast();
 
@@ -65,6 +68,17 @@ export function FileCardAction({ file, isFavorite }: FileCardActionProps) {
       variant: "default",
       title: "File moved to trash!",
       description: "You can restore it later if you want.",
+      duration: 3000,
+    });
+  };
+
+  const handleRestoreFile = async () => {
+    await restoreFile({ fileId: file._id });
+
+    toast({
+      variant: "default",
+      title: "File restored!",
+      description: "Your file restored successfully.",
       duration: 3000,
     });
   };
@@ -130,7 +144,13 @@ export function FileCardAction({ file, isFavorite }: FileCardActionProps) {
           </DropdownMenuItem>
 
           <Protect
-            role="org:admin"
+            condition={(check) => {
+              return (
+                check({
+                  role: "org:admin",
+                }) || file.userId === me?._id
+              );
+            }}
             fallback={
               <p className="text-xs px-2 py-1.5">
                 You do not have the permission delete this file.
@@ -140,7 +160,7 @@ export function FileCardAction({ file, isFavorite }: FileCardActionProps) {
             <DropdownMenuItem
               onClick={() => {
                 if (file.isMarkedForDeletion) {
-                  restoreFile({ fileId: file._id });
+                  handleRestoreFile();
                 } else {
                   setIsConfirmOpen(true);
                 }
