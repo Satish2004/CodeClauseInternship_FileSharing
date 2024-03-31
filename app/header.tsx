@@ -11,7 +11,7 @@ import React from "react";
 
 const Header = () => {
   return (
-    <div className="border-b py-3 bg-gray-50">
+    <div className="relative z-10 border-b py-3 bg-gray-50">
       <div className="container mx-auto flex items-center justify-between">
         <Link href={"/"}>
           <Image
